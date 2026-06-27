@@ -138,7 +138,6 @@ const toastMsg       = document.getElementById("toast-message");
 // INIT
 // ============================================
 document.addEventListener("DOMContentLoaded", () => {
-  animateCounter(articlesCount, 0, 12480, 1800);
   bindEvents();
 
   if (IS_DEPLOYED) {
@@ -672,6 +671,7 @@ function showToast(message) {
 // COUNTER ANIMATION
 // ============================================
 function animateCounter(el, from, to, duration) {
+  if (!el) return;
   const start = performance.now();
   function update(time) {
     const elapsed  = time - start;
