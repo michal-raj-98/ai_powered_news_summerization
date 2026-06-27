@@ -42,22 +42,32 @@ export default async function handler(req, res) {
 
   // Get category from query string: /api/news?category=technology
   const { category = "all" } = req.query;
-  const newsCategory = CATEGORY_MAP[category] ?? "";
 
-  // Build the NewsAPI request URL
+  let url;
   const params = new URLSearchParams({
-    country:  "us",
     pageSize: "12",
     apiKey:   newsApiKey
   });
 
-  if (newsCategory) {
-    params.set("category", newsCategory);
+  if (category === "politics") {
+    // NewsAPI top-headlines doesn't have a "politics" category.
+    // We use the /everything endpoint to search for Indian/Tamil Nadu politics.
+    url = "https://newsapi.org/v2/everything";
+    params.set("q", "(politics OR government OR election OR minister OR DMK OR BJP OR Congress OR Stalin) AND (India OR \"Tamil Nadu\" OR Tamilnadu)");
+    params.set("language", "en");
+    params.set("sortBy", "publishedAt");
+  } else {
+    url = "https://newsapi.org/v2/top-headlines";
+    params.set("country", "in"); // Focus on India top headlines
+    const newsCategory = CATEGORY_MAP[category] ?? "";
+    if (newsCategory) {
+      params.set("category", newsCategory);
+    }
   }
 
   try {
     const response = await fetch(
-      `https://newsapi.org/v2/top-headlines?${params.toString()}`
+      `${url}?${params.toString()}`
     );
 
     if (!response.ok) {

@@ -565,6 +565,7 @@ ul { list-style: none; }
 }
 
 .category-technology { background: rgba(99, 102, 241, 0.85); color: #fff; }
+.category-politics   { background: rgba(124, 58, 237, 0.85); color: #fff; }
 .category-business   { background: rgba(245, 158, 11, 0.85); color: #fff; }
 .category-science    { background: rgba(6, 182, 212, 0.85);  color: #fff; }
 .category-health     { background: rgba(16, 185, 129, 0.85); color: #fff; }

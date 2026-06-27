@@ -86,6 +86,7 @@ const MOCK_NEWS = [
 // Category color map (must match CSS)
 const CATEGORY_COLORS = {
   technology:    "category-technology",
+  politics:      "category-politics",
   business:      "category-business",
   science:       "category-science",
   health:        "category-health",
@@ -713,6 +714,7 @@ function estimateReadTime(text) {
 
 function guessCategory(article) {
   const text = ((article.title || "") + " " + (article.description || "")).toLowerCase();
+  if (/(politics|minister|election|modi|bjp|congress|govt|parliament|government|dmk|aiadmk|stalin|chief minister|pm modi|prime minister)/i.test(text)) return "politics";
   if (/(tech|ai|software|apple|google|microsoft|robot|gadget|chip)/i.test(text)) return "technology";
   if (/(stock|market|economy|finance|business|profit|trade|startup)/i.test(text)) return "business";
   if (/(health|covid|vaccine|medicine|hospital|disease|drug)/i.test(text))        return "health";
