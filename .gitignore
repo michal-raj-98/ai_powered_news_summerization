@@ -1,0 +1,19 @@
+# =============================================
+# Files to NEVER upload to GitHub
+# =============================================
+
+# Real environment variables (contains secret API keys)
+.env
+.env.local
+.env.production
+
+# Vercel build output
+.vercel
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
