@@ -509,14 +509,66 @@ function setCategory(category) {
 }
 
 // ============================================
-// SEARCH
+// SEARCH — calls /api/search for real results
 // ============================================
-function handleSearch() {
+let searchTimer;
+
+async function handleSearch() {
   currentSearch  = searchInput.value.trim();
   displayedCount = 8;
   searchClear.classList.toggle("visible", currentSearch.length > 0);
-  renderSkeletons(4);
-  setTimeout(renderNews, 300);
+
+  // If search cleared, go back to category news
+  if (!currentSearch) {
+    restoreCategoryNews();
+    return;
+  }
+
+  if (!IS_DEPLOYED) {
+    // Local / file:// mode — filter mock data
+    renderSkeletons(4);
+    setTimeout(renderNews, 300);
+    return;
+  }
+
+  // Call real search API
+  renderSkeletons(6);
+
+  try {
+    const res  = await fetch(`/api/search?q=${encodeURIComponent(currentSearch)}`);
+    const data = await res.json();
+
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+
+    const articles = (data.articles || [])
+      .filter(a => a.urlToImage && (a.description || a.content) && a.title !== "[Removed]")
+      .map((a, i) => ({
+        id:                 `search-${i}-${Date.now()}`,
+        category:           guessCategory(a),
+        title:              a.title,
+        source:             a.source?.name || "Unknown",
+        date:               formatRelativeDate(a.publishedAt),
+        readTime:           estimateReadTime(a.content || a.description),
+        url:                a.url,
+        image:              a.urlToImage,
+        description:        a.content || a.description,
+        aiSummary:          a.description,
+        aiSummaryGenerated: false
+      }));
+
+    currentArticles = articles;
+    renderNews();
+
+    if (articles.length === 0) {
+      showToast(`No results found for "${currentSearch}"`);
+    } else {
+      showToast(`Found ${articles.length} results for "${currentSearch}"`);
+    }
+
+  } catch (err) {
+    console.error("[handleSearch]", err.message);
+    showToast("⚠️ Search failed. Please try again.");
+  }
 }
 
 function clearSearch() {
@@ -524,8 +576,23 @@ function clearSearch() {
   currentSearch     = "";
   searchClear.classList.remove("visible");
   displayedCount    = 8;
-  renderSkeletons(6);
-  setTimeout(renderNews, 300);
+  restoreCategoryNews();
+}
+
+// Restore news for the active category after clearing search
+function restoreCategoryNews() {
+  if (!IS_DEPLOYED) {
+    currentArticles = MOCK_NEWS;
+    renderSkeletons(4);
+    setTimeout(renderNews, 300);
+    return;
+  }
+  if (newsCache[currentCategory]) {
+    currentArticles = newsCache[currentCategory];
+    renderNews();
+  } else {
+    fetchNews(currentCategory);
+  }
 }
 
 // ============================================
