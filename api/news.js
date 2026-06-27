@@ -43,27 +43,27 @@ export default async function handler(req, res) {
   // Get category from query string: /api/news?category=technology
   const { category = "all" } = req.query;
 
-  let url;
+  // Custom search queries to get rich news focusing on India and Tamil Nadu for each category
+  const SEARCH_QUERIES = {
+    all:           "(India OR \"Tamil Nadu\" OR Tamilnadu OR Chennai OR Stalin OR Modi)",
+    politics:      "(politics OR government OR election OR minister OR DMK OR BJP OR Congress OR Stalin) AND (India OR \"Tamil Nadu\" OR Tamilnadu)",
+    technology:    "(technology OR tech OR software OR gadget OR startup OR mobile) AND (India OR \"Tamil Nadu\" OR Chennai)",
+    business:      "(business OR finance OR economy OR stock OR market OR startup) AND (India OR \"Tamil Nadu\" OR Chennai)",
+    science:       "(science OR space OR research OR discovery OR physics) AND (India OR \"Tamil Nadu\" OR Chennai)",
+    health:        "(health OR medicine OR hospital OR disease OR drug OR covid) AND (India OR \"Tamil Nadu\" OR Chennai)",
+    sports:        "(sports OR cricket OR football OR tennis OR match OR league) AND (India OR \"Tamil Nadu\" OR Chennai)",
+    entertainment: "(entertainment OR movie OR cinema OR music OR celebrity OR actor OR kollywood) AND (India OR \"Tamil Nadu\" OR Chennai)",
+    world:         "(world OR global OR international) AND (India OR \"Tamil Nadu\" OR Chennai)"
+  };
+
+  const url = "https://newsapi.org/v2/everything";
   const params = new URLSearchParams({
+    q:        SEARCH_QUERIES[category] || SEARCH_QUERIES.all,
+    language: "en",
+    sortBy:   "publishedAt",
     pageSize: "12",
     apiKey:   newsApiKey
   });
-
-  if (category === "politics") {
-    // NewsAPI top-headlines doesn't have a "politics" category.
-    // We use the /everything endpoint to search for Indian/Tamil Nadu politics.
-    url = "https://newsapi.org/v2/everything";
-    params.set("q", "(politics OR government OR election OR minister OR DMK OR BJP OR Congress OR Stalin) AND (India OR \"Tamil Nadu\" OR Tamilnadu)");
-    params.set("language", "en");
-    params.set("sortBy", "publishedAt");
-  } else {
-    url = "https://newsapi.org/v2/top-headlines";
-    params.set("country", "in"); // Focus on India top headlines
-    const newsCategory = CATEGORY_MAP[category] ?? "";
-    if (newsCategory) {
-      params.set("category", newsCategory);
-    }
-  }
 
   try {
     const response = await fetch(
