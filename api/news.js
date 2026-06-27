@@ -67,7 +67,12 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `${url}?${params.toString()}`
+      `${url}?${params.toString()}`,
+      {
+        headers: {
+          "User-Agent": "NewsBriefAI/1.0"
+        }
+      }
     );
 
     if (!response.ok) {

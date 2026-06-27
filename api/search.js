@@ -32,7 +32,12 @@ export default async function handler(req, res) {
     });
 
     const response = await fetch(
-      `https://newsapi.org/v2/everything?${params.toString()}`
+      `https://newsapi.org/v2/everything?${params.toString()}`,
+      {
+        headers: {
+          "User-Agent": "NewsBriefAI/1.0"
+        }
+      }
     );
 
     if (!response.ok) {
