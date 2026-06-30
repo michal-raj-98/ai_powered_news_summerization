@@ -154,9 +154,12 @@ function parseRSS(xml, sourceName, placeholder) {
     const title   = extractCDATA(block, "title");
     const link    = extractLink(block);
     const desc    = stripHtml(extractCDATA(block, "description") || "");
-    const rawDate = extractText(block, "pubDate")
-                 || extractText(block, "dc:date")
-                 || extractText(block, "published");
+    const rawDate = extractCDATA(block, "pubDate")
+                 || extractCDATA(block, "dc:date")
+                 || extractCDATA(block, "published")
+                 || extractCDATA(block, "updated")
+                 || extractText(block,  "pubDate")
+                 || extractText(block,  "dc:date");
     const image   = extractImage(block) || placeholder;
 
     if (!title || title === "[Removed]" || !link) continue;

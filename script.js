@@ -734,11 +734,15 @@ function updateLastUpdated() {
 // ============================================
 function formatRelativeDate(isoDate) {
   if (!isoDate) return "Recently";
-  const diff = (Date.now() - new Date(isoDate).getTime()) / 1000;
-  if (diff < 3600)    return `${Math.round(diff / 60)} min ago`;
-  if (diff < 86400)   return `${Math.round(diff / 3600)} hours ago`;
+  const ts   = new Date(isoDate).getTime();
+  if (isNaN(ts)) return "Recently";
+  const diff = (Date.now() - ts) / 1000;
+  if (diff < 0)       return "Just now";          // future timestamp (clock skew)
+  if (diff < 60)      return "Just now";
+  if (diff < 3600)    return `${Math.floor(diff / 60)} min ago`;
+  if (diff < 86400)   return `${Math.floor(diff / 3600)} hr${Math.floor(diff / 3600) > 1 ? "s" : ""} ago`;
   if (diff < 172800)  return "1 day ago";
-  return `${Math.round(diff / 86400)} days ago`;
+  return `${Math.floor(diff / 86400)} days ago`;
 }
 
 /** Convert a relative date string back to a timestamp for sorting */
