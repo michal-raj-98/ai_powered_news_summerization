@@ -103,7 +103,7 @@ const CATEGORY_COLORS = {
 let currentCategory = "all";
 let currentSearch   = "";
 let isListView      = false;
-let displayedCount  = 25;
+let displayedCount  = 100;
 let currentArticles = [];
 const PAGE_SIZE     = 4;
 let newsCache       = {};  // category → article[]
@@ -530,7 +530,7 @@ function shareArticle(event, id) {
 // ============================================
 function setCategory(category) {
   currentCategory = category;
-  displayedCount  = 25;
+  displayedCount  = 100;
   categoryBtns.forEach(btn => {
     btn.classList.toggle("active", btn.dataset.category === category);
   });
@@ -550,7 +550,7 @@ let searchTimer;
 
 async function handleSearch() {
   currentSearch  = searchInput.value.trim();
-  displayedCount = 25;
+  displayedCount = 100;
   searchClear.classList.toggle("visible", currentSearch.length > 0);
 
   // If search cleared, go back to category news
@@ -610,7 +610,7 @@ function clearSearch() {
   searchInput.value = "";
   currentSearch     = "";
   searchClear.classList.remove("visible");
-  displayedCount    = 25;
+  displayedCount    = 100;
   restoreCategoryNews();
 }
 
@@ -675,7 +675,7 @@ function refreshFeed() {
   refreshBtn.classList.add("spinning");
   newsCache      = {};
   summaryCache   = {};
-  displayedCount = 25;
+  displayedCount = 100;
 
   if (IS_DEPLOYED) {
     fetchNews(currentCategory).then(() => {

@@ -114,7 +114,7 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     status:   "ok",
-    articles: deduped.slice(0, 50),
+    articles: deduped.slice(0, 100),
     total:    deduped.length,
     source:   "rss"
   });

@@ -63,7 +63,7 @@ export default async function handler(req, res) {
     q:        SEARCH_QUERIES[category] || SEARCH_QUERIES.all,
     language: "en",
     sortBy:   "publishedAt",
-    pageSize: "25",
+    pageSize: "100",
     apiKey:   newsApiKey
   });
 
