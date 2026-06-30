@@ -1,302 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="AI-Powered News Summarization — Stay informed in seconds with AI-generated summaries of today's top news."
-    />
-    <title>NewsBrief AI — Smart News Summarization</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <!-- Animated Background -->
-    <div class="bg-orbs">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-    </div>
 
-    <!-- ===== HEADER ===== -->
-    <header class="header" id="header">
-      <nav class="nav container">
-        <!-- Logo -->
-        <a href="#" class="logo" id="logo-link">
-          <div class="logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-              <path d="M2 17l10 5 10-5"/>
-              <path d="M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <span class="logo-text">NewsBrief <span class="logo-ai">AI</span></span>
-        </a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="AI-Powered News Summarization — Stay informed in seconds with AI-generated summaries of today's top news." />
+  <title>NewsBrief AI — Smart News Summarization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-        <!-- Search Bar -->
-        <div class="search-wrapper" id="search-wrapper">
-          <div class="search-box">
-            <svg class="search-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              id="search-input"
-              class="search-input"
-              placeholder="Search news, topics, keywords..."
-              autocomplete="off"
-            />
-            <button class="search-clear" id="search-clear" title="Clear search">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-          </div>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <!-- Logo -->
+      <a href="#" class="logo" id="logo-link">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
         </div>
+        <span class="logo-text">NewsBrief <span class="logo-ai">AI</span></span>
+      </a>
 
-        <!-- Nav Actions -->
-        <div class="nav-actions">
-          <button class="btn-refresh" id="refresh-btn" title="Refresh news">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      <!-- Search Bar -->
+      <div class="search-wrapper" id="search-wrapper">
+        <div class="search-box">
+          <svg class="search-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input type="text" id="search-input" class="search-input" placeholder="Search news, topics, keywords..."
+            autocomplete="off" />
+          <button class="search-clear" id="search-clear" title="Clear search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
-          <div class="live-badge">
-            <span class="live-dot"></span>
-            Live
-          </div>
-        </div>
-      </nav>
-    </header>
-
-    <!-- ===== HERO SECTION ===== -->
-    <section class="hero" id="hero">
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-tag">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-            AI-Powered Summarization
-          </div>
-          <h1 class="hero-title">
-            Stay Informed,<br />
-            <span class="gradient-text">Not Overwhelmed.</span>
-          </h1>
-          <p class="hero-subtitle">
-            Get the key points in seconds. Your smart digest for the latest news from India and Tamil Nadu, summarized by Gemini AI.
-          </p>
-
         </div>
       </div>
-    </section>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main" id="main-content">
-      <div class="container">
-
-        <!-- Category Tabs -->
-        <section class="categories-section" id="categories-section">
-          <div class="categories-scroll">
-            <div class="categories" id="categories" role="tablist">
-              <button class="category-btn active" data-category="all" role="tab" id="tab-all">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                  <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-                </svg>
-                All News
-              </button>
-              <button class="category-btn" data-category="politics" role="tab" id="tab-politics">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
-                  <line x1="4" y1="22" x2="4" y2="15"/>
-                </svg>
-                Politics
-              </button>
-              <button class="category-btn" data-category="technology" role="tab" id="tab-technology">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-                </svg>
-                Technology
-              </button>
-              <button class="category-btn" data-category="business" role="tab" id="tab-business">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-                Business
-              </button>
-              <button class="category-btn" data-category="science" role="tab" id="tab-science">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
-                </svg>
-                Science
-              </button>
-              <button class="category-btn" data-category="health" role="tab" id="tab-health">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                </svg>
-                Health
-              </button>
-              <button class="category-btn" data-category="sports" role="tab" id="tab-sports">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-                Sports
-              </button>
-              <button class="category-btn" data-category="entertainment" role="tab" id="tab-entertainment">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
-                </svg>
-                Entertainment
-              </button>
-              <button class="category-btn" data-category="world" role="tab" id="tab-world">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="2" y1="12" x2="22" y2="12"/>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-                World
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Results Info Bar -->
-        <div class="results-bar" id="results-bar">
-          <div class="results-info">
-            <span id="results-count-text">Showing <strong>8</strong> latest articles</span>
-          </div>
-          <div class="view-options">
-            <button class="view-btn active" id="grid-view-btn" title="Grid view">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-              </svg>
-            </button>
-            <button class="view-btn" id="list-view-btn" title="List view">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
-                <line x1="8" y1="18" x2="21" y2="18"/>
-                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
-                <line x1="3" y1="18" x2="3.01" y2="18"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- News Grid -->
-        <section class="news-section" id="news-section">
-          <div class="news-grid" id="news-grid">
-            <!-- Cards injected by JS -->
-          </div>
-
-          <!-- Empty State -->
-          <div class="empty-state hidden" id="empty-state">
-            <div class="empty-icon">
-              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-            </div>
-            <h3>No results found</h3>
-            <p>Try a different search term or category</p>
-            <button class="btn-primary" id="clear-search-btn">Clear Search</button>
-          </div>
-        </section>
-
-        <!-- Load More -->
-        <div class="load-more-wrapper" id="load-more-wrapper">
-          <button class="btn-load-more" id="load-more-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-            </svg>
-            Load More Articles
-          </button>
-        </div>
-
-      </div>
-    </main>
-
-    <!-- ===== ARTICLE MODAL ===== -->
-    <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal" id="article-modal">
-        <button class="modal-close" id="modal-close" title="Close">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      <!-- Nav Actions -->
+      <div class="nav-actions">
+        <button class="btn-refresh" id="refresh-btn" title="Refresh news">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10" />
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
           </svg>
         </button>
-        <div class="modal-image-wrap">
-          <img class="modal-image" id="modal-image" src="" alt="" />
-          <div class="modal-category-badge" id="modal-category-badge"></div>
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          Live
         </div>
-        <div class="modal-body">
-          <div class="modal-meta" id="modal-meta"></div>
-          <h2 class="modal-title" id="modal-title"></h2>
-          <div class="modal-ai-summary" id="modal-ai-summary">
-            <div class="ai-summary-header">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          AI-Powered Summarization
+        </div>
+        <h1 class="hero-title">
+          Stay Informed,<br />
+          <span class="gradient-text">Not Overwhelmed.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Get the key points in seconds. Your smart digest for the latest news from India and Tamil Nadu, summarized by
+          Gemini AI.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main" id="main-content">
+    <div class="container">
+
+      <!-- Category Tabs -->
+      <section class="categories-section" id="categories-section">
+        <div class="categories-scroll">
+          <div class="categories" id="categories" role="tablist">
+            <button class="category-btn active" data-category="all" role="tab" id="tab-all">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
               </svg>
-              AI Summary
-            </div>
-            <p id="modal-summary-text"></p>
+              All News
+            </button>
+            <button class="category-btn" data-category="politics" role="tab" id="tab-politics">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                <line x1="4" y1="22" x2="4" y2="15" />
+              </svg>
+              Politics
+            </button>
+            <button class="category-btn" data-category="technology" role="tab" id="tab-technology">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              Technology
+            </button>
+            <button class="category-btn" data-category="business" role="tab" id="tab-business">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+              Business
+            </button>
+            <button class="category-btn" data-category="science" role="tab" id="tab-science">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
+              </svg>
+              Science
+            </button>
+            <button class="category-btn" data-category="health" role="tab" id="tab-health">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+              Health
+            </button>
+            <button class="category-btn" data-category="sports" role="tab" id="tab-sports">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+              Sports
+            </button>
+            <button class="category-btn" data-category="entertainment" role="tab" id="tab-entertainment">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="23 7 16 12 23 17 23 7" />
+                <rect x="1" y="5" width="15" height="14" rx="2" />
+              </svg>
+              Entertainment
+            </button>
+            <button class="category-btn" data-category="world" role="tab" id="tab-world">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+              World
+            </button>
           </div>
-          <div class="modal-description" id="modal-description"></div>
-          <a class="btn-read-full" id="modal-read-btn" href="#" target="_blank" rel="noopener noreferrer">
-            Read Full Article
+        </div>
+      </section>
+
+      <!-- Results Info Bar -->
+      <div class="results-bar" id="results-bar">
+        <div class="results-info">
+          <span id="results-count-text">Showing <strong>8</strong> latest articles</span>
+        </div>
+        <div class="view-options">
+          <button class="view-btn active" id="grid-view-btn" title="Grid view">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
             </svg>
+          </button>
+          <button class="view-btn" id="list-view-btn" title="List view">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- News Grid -->
+      <section class="news-section" id="news-section">
+        <div class="news-grid" id="news-grid">
+          <!-- Cards injected by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="empty-state">
+          <div class="empty-icon">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </div>
+          <h3>No results found</h3>
+          <p>Try a different search term or category</p>
+          <button class="btn-primary" id="clear-search-btn">Clear Search</button>
+        </div>
+      </section>
+
+      <!-- Load More -->
+      <div class="load-more-wrapper" id="load-more-wrapper">
+        <button class="btn-load-more" id="load-more-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10" />
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+          </svg>
+          Load More Articles
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== ARTICLE MODAL ===== -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal" id="article-modal">
+      <button class="modal-close" id="modal-close" title="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-image-wrap">
+        <img class="modal-image" id="modal-image" src="" alt="" />
+        <div class="modal-category-badge" id="modal-category-badge"></div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta" id="modal-meta"></div>
+        <h2 class="modal-title" id="modal-title"></h2>
+        <div class="modal-ai-summary" id="modal-ai-summary">
+          <div class="ai-summary-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            AI Summary
+          </div>
+          <p id="modal-summary-text"></p>
+        </div>
+        <div class="modal-description" id="modal-description"></div>
+        <a class="btn-read-full" id="modal-read-btn" href="#" target="_blank" rel="noopener noreferrer">
+          Read Full Article
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <span class="logo-text">NewsBrief <span class="logo-ai">AI</span></span>
           </a>
+          <p class="footer-tagline">AI-powered news. Human-friendly summaries.</p>
+        </div>
+        <div class="footer-info">
+          <p class="footer-update">Last updated: <span id="last-updated">Just now</span></p>
         </div>
       </div>
-    </div>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer" id="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <a href="#" class="logo">
-              <div class="logo-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                  <path d="M2 17l10 5 10-5"/>
-                  <path d="M2 12l10 5 10-5"/>
-                </svg>
-              </div>
-              <span class="logo-text">NewsBrief <span class="logo-ai">AI</span></span>
-            </a>
-            <p class="footer-tagline">AI-powered news. Human-friendly summaries.</p>
-          </div>
-          <div class="footer-info">
-            <p>Powered by <strong>Google Gemini AI</strong> &amp; <strong>NewsAPI</strong></p>
-            <p class="footer-update">Last updated: <span id="last-updated">Just now</span></p>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>© 2026 NewsBrief AI. Built for smarter news consumption.</p>
-        </div>
+      <div class="footer-bottom">
+        <p>© 2026 NewsBrief AI. Built for smarter news consumption.</p>
       </div>
-    </footer>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-      <span id="toast-message">Refreshed!</span>
     </div>
+  </footer>
 
-    <script src="script.js"></script>
-  </body>
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+    <span id="toast-message">Refreshed!</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
 </html>
