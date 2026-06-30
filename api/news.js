@@ -7,6 +7,7 @@
 // Map frontend category names → NewsAPI categories
 const CATEGORY_MAP = {
   all:           "",
+  politics:      "general",
   technology:    "technology",
   business:      "business",
   science:       "science",
@@ -62,7 +63,7 @@ export default async function handler(req, res) {
     q:        SEARCH_QUERIES[category] || SEARCH_QUERIES.all,
     language: "en",
     sortBy:   "publishedAt",
-    pageSize: "12",
+    pageSize: "25",
     apiKey:   newsApiKey
   });
 

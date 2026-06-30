@@ -103,7 +103,7 @@ const CATEGORY_COLORS = {
 let currentCategory = "all";
 let currentSearch   = "";
 let isListView      = false;
-let displayedCount  = 8;
+let displayedCount  = 25;
 let currentArticles = [];
 const PAGE_SIZE     = 4;
 let newsCache       = {};  // category → article[]
@@ -191,15 +191,20 @@ async function fetchNews(category) {
   renderSkeletons(8);
 
   try {
-    const res  = await fetch(`/api/news?category=${encodeURIComponent(category)}`);
-    const data = await res.json();
+    // ── Fetch NewsAPI + RSS feeds in parallel ──────────────────────────────
+    const [newsResult, rssResult] = await Promise.allSettled([
+      fetch(`/api/news?category=${encodeURIComponent(category)}`).then(r => r.json()),
+      fetch(`/api/rss?category=${encodeURIComponent(category)}`).then(r => r.json())
+    ]);
 
-    if (!res.ok || data.error) {
-      throw new Error(data.error || `HTTP ${res.status}`);
-    }
+    // ── Extract raw article arrays (fail gracefully) ───────────────────────
+    const rawNews = (newsResult.status === "fulfilled" && !newsResult.value?.error)
+      ? (newsResult.value.articles || []) : [];
+    const rawRSS  = (rssResult.status  === "fulfilled" && !rssResult.value?.error)
+      ? (rssResult.value.articles  || []) : [];
 
-    // Transform & filter: only keep articles with an image and description
-    const articles = (data.articles || [])
+    // ── Transform NewsAPI articles ─────────────────────────────────────────
+    const fromNews = rawNews
       .filter(a => a.urlToImage && (a.description || a.content) && a.title !== "[Removed]")
       .map((a, i) => ({
         id:                 `live-${i}-${Date.now()}`,
@@ -211,20 +216,50 @@ async function fetchNews(category) {
         url:                a.url,
         image:              a.urlToImage,
         description:        a.content || a.description,
-        aiSummary:          a.description,  // shown on card until Gemini runs
+        aiSummary:          a.description,
         aiSummaryGenerated: false
       }));
 
-    if (articles.length === 0) {
-      throw new Error("No articles with images found");
-    }
+    // ── Transform RSS articles ─────────────────────────────────────────────
+    const fromRSS = rawRSS
+      .filter(a => a.title && a.title !== "[Removed]" && a.url)
+      .map((a, i) => ({
+        id:                 `rss-${i}-${Date.now()}`,
+        category:           category === "all" ? guessCategory(a) : category,
+        title:              a.title,
+        source:             a.source?.name || "Unknown",
+        date:               formatRelativeDate(a.publishedAt),
+        readTime:           estimateReadTime(a.content || a.description),
+        url:                a.url,
+        image:              a.urlToImage,
+        description:        a.content || a.description,
+        aiSummary:          a.description || a.title,
+        aiSummaryGenerated: false
+      }));
 
-    newsCache[category] = articles;
-    currentArticles     = articles;
+    // ── Merge: NewsAPI first, then RSS; deduplicate by title ───────────────
+    const seen   = new Set();
+    const merged = [...fromNews, ...fromRSS].filter(a => {
+      const key = a.title.slice(0, 70).toLowerCase().replace(/\s+/g, " ").trim();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // ── Sort newest → oldest using the relative date string ────────────────
+    merged.sort((a, b) => parseRelativeDate(b.date) - parseRelativeDate(a.date));
+
+    if (merged.length === 0) throw new Error("No articles found from any source");
+
+    const sourceCount = [rawNews.length > 0 ? "NewsAPI" : null, rawRSS.length > 0 ? "RSS feeds" : null]
+      .filter(Boolean).join(" + ");
+
+    newsCache[category] = merged;
+    currentArticles     = merged;
 
     renderNews();
     updateLastUpdated();
-    showToast(`Loaded ${articles.length} live articles ✓`);
+    showToast(`Loaded ${merged.length} articles from ${sourceCount} ✓`);
 
   } catch (err) {
     console.error("[fetchNews]", err.message);
@@ -495,7 +530,7 @@ function shareArticle(event, id) {
 // ============================================
 function setCategory(category) {
   currentCategory = category;
-  displayedCount  = 8;
+  displayedCount  = 25;
   categoryBtns.forEach(btn => {
     btn.classList.toggle("active", btn.dataset.category === category);
   });
@@ -515,7 +550,7 @@ let searchTimer;
 
 async function handleSearch() {
   currentSearch  = searchInput.value.trim();
-  displayedCount = 8;
+  displayedCount = 25;
   searchClear.classList.toggle("visible", currentSearch.length > 0);
 
   // If search cleared, go back to category news
@@ -575,7 +610,7 @@ function clearSearch() {
   searchInput.value = "";
   currentSearch     = "";
   searchClear.classList.remove("visible");
-  displayedCount    = 8;
+  displayedCount    = 25;
   restoreCategoryNews();
 }
 
@@ -640,7 +675,7 @@ function refreshFeed() {
   refreshBtn.classList.add("spinning");
   newsCache      = {};
   summaryCache   = {};
-  displayedCount = 8;
+  displayedCount = 25;
 
   if (IS_DEPLOYED) {
     fetchNews(currentCategory).then(() => {
@@ -706,6 +741,18 @@ function formatRelativeDate(isoDate) {
   return `${Math.round(diff / 86400)} days ago`;
 }
 
+/** Convert a relative date string back to a timestamp for sorting */
+function parseRelativeDate(dateStr) {
+  if (!dateStr || dateStr === "Recently") return 0;
+  const min  = dateStr.match(/(\d+)\s*min/);
+  if (min)  return Date.now() - parseInt(min[1])  * 60       * 1000;
+  const hr   = dateStr.match(/(\d+)\s*hour/);
+  if (hr)   return Date.now() - parseInt(hr[1])   * 3600     * 1000;
+  const day  = dateStr.match(/(\d+)\s*day/);
+  if (day)  return Date.now() - parseInt(day[1])  * 86400    * 1000;
+  return 0;
+}
+
 function estimateReadTime(text) {
   if (!text) return "2 min read";
   const words = text.trim().split(/\s+/).length;
@@ -714,13 +761,20 @@ function estimateReadTime(text) {
 
 function guessCategory(article) {
   const text = ((article.title || "") + " " + (article.description || "")).toLowerCase();
-  if (/(politics|minister|election|modi|bjp|congress|govt|parliament|government|dmk|aiadmk|stalin|chief minister|pm modi|prime minister)/i.test(text)) return "politics";
-  if (/(tech|ai|software|apple|google|microsoft|robot|gadget|chip)/i.test(text)) return "technology";
-  if (/(stock|market|economy|finance|business|profit|trade|startup)/i.test(text)) return "business";
-  if (/(health|covid|vaccine|medicine|hospital|disease|drug)/i.test(text))        return "health";
-  if (/(science|space|nasa|discovery|research|study|physics)/i.test(text))        return "science";
-  if (/(sport|football|cricket|tennis|olympics|match|league)/i.test(text))        return "sports";
-  if (/(movie|film|celebrity|music|entertainment|actor)/i.test(text))             return "entertainment";
+  // Politics — must come first (high-priority, specific terms)
+  if (/(\bpolitics\b|\bminister\b|\belection\b|\bvoting\b|\bballot\b|\bcongress\b|\bsenate\b|\bparliament\b|\bgovernment\b|\bgovt\b|\bpm modi\b|\bprime minister\b|\bcabinet\b|\bbjp\b|\bdmk\b|\baiadmk\b|\bstroke\b|\bstali|\bcm \b|\bchief minister\b|\bopposition\b|\blegislat|\bpresident\b|\bwhite house\b|\bmanifest|\bcampaign\b|\bvote\b|\bdemocrat\b|\brepublican\b|\btrump\b|\bbiden\b|\bmodiji\b|\bswaraj\b|\brahul gandhi\b|\bamnesty\b|\braj\b)/i.test(text)) return "politics";
+  // Technology
+  if (/(\btech\b|\btechnology\b|\bai\b|\bartificial intelligence\b|\bsoftware\b|\bapple\b|\bgoogle\b|\bmicrosoft\b|\bsamsung\b|\brobot\b|\bgadget\b|\bchip\b|\bsmartphone\b|\bapp\b|\bcybersecurity\b|\binternet\b|\bcloud\b|\bdata\b|\bblockchain\b|\bcrypto\b|\belectric vehicle\b|\bev \b|\bsemiconductor\b|\bcomputer\b|\blaptop\b|\bdigital\b|\btesla\b|\bnvidia\b|\bmetaverse\b|\bgaming\b|\biphone\b|\bandroid\b)/i.test(text)) return "technology";
+  // Business & Finance
+  if (/(\bstock\b|\bmarket\b|\beconomy\b|\bfinance\b|\bbusiness\b|\bprofit\b|\btrade\b|\bstartup\b|\bgdp\b|\binfla|\bbanking\b|\binvestment\b|\bipo\b|\bshare\b|\bcurrency\b|\brupee\b|\bdollar\b|\bimport\b|\bexport\b|\btariff\b|\bbudget\b|\bsensex\b|\bnifty\b|\bfdi\b|\bcorporate\b|\breach\b|\brevenue\b|\bquarter\b|\bceo\b)/i.test(text)) return "business";
+  // Health & Medicine
+  if (/(\bhealth\b|\bcovid\b|\bvaccine\b|\bmedicine\b|\bhospital\b|\bdisease\b|\bdrug\b|\bvirus\b|\bpandemic\b|\bcancer\b|\bdiabetes\b|\bmental health\b|\bdoctor\b|\bclinic\b|\btreatment\b|\bsurgery\b|\bwho\b|\bfda\b|\bhealth ministry\b|\bnhs\b|\bmedical\b|\bpatient\b|\bimmune\b|\bnutrition\b|\bwellness\b)/i.test(text)) return "health";
+  // Science
+  if (/(\bscience\b|\bspace\b|\bnasa\b|\bdiscovery\b|\bresearch\b|\bstudy\b|\bphysics\b|\bisro\b|\bclimate\b|\benvironment\b|\bplanet\b|\bsolar\b|\bastrono|\bbiolog|\bchemistr|\bgeolog|\bevolut|\bfossil\b|\bgene\b|\bdna\b|\bquantum\b|\batom\b|\bscientist\b|\blab\b|\bexperiment\b)/i.test(text)) return "science";
+  // Sports
+  if (/(\bsport\b|\bfootball\b|\bcricket\b|\btennis\b|\bolympic\b|\bmatch\b|\bleague\b|\btournament\b|\bplayer\b|\bteam\b|\bgoal\b|\bwicket\b|\bchampionship\b|\bgame\b|\bworld cup\b|\bipl\b|\bnba\b|\bnfl\b|\bfifa\b|\bathlon\b|\bcoach\b|\bracing\b|\bboxing\b|\bwrestling\b|\bgolf\b|\bbadminton\b)/i.test(text)) return "sports";
+  // Entertainment
+  if (/(\bmovie\b|\bfilm\b|\bcelebrity\b|\bmusic\b|\bentertainment\b|\bactor\b|\bactress\b|\bdirector\b|\bnetflix\b|\bott\b|\bcollywood\b|\bollywood\b|\bkollywood\b|\balbum\b|\bsong\b|\bseries\b|\bshow\b|\baward\b|\boscars\b|\bgrammys\b|\bcinema\b|\bstreaming\b|\btrailer\b)/i.test(text)) return "entertainment";
   return "world";
 }
 
